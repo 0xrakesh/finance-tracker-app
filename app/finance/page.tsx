@@ -41,8 +41,14 @@ export default function Home() {
     }
 
     const userProfile = async() => {
-        let response: Response = await fetch("/api/userprofile");
-        if(response.status===404) return;
+        let token = localStorage.getItem("authToken");
+        if(!token) return;
+        let response:Response = await fetch("/api/userprofile",{
+            method:"GET",
+            headers : {
+                authorization:token
+            },
+        });
         let result = await response.json();
         setUser(result?.user);
     }
@@ -68,8 +74,7 @@ export default function Home() {
 
     return (
         <Fragment>
-
-            <Navbar page={"finance"}/>
+            <Navbar page={"/finance"}/>
             {
                 loading ? <Progress/> : user ?
                 <Fragment>

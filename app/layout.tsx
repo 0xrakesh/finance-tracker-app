@@ -1,8 +1,9 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import {Toaster} from "@/components/ui/sonner";
-import { UserProvider } from '@auth0/nextjs-auth0/client';
 import "./globals.css";
+import Navbar from "@/components/Navbar";
+import { usePathname} from 'next/navigation';
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -18,14 +19,12 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-    <UserProvider>
       <body className={inter.className}>
         <main className="flex min-h-screen flex-col items-center p-24">
           {children}
         </main>
         <Toaster/>
       </body>
-    </UserProvider>
     </html>
   );
 }
