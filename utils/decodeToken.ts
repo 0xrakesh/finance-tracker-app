@@ -1,20 +1,19 @@
-import {getSession} from "@auth0/nextjs-auth0";
 import {prisma} from "@/utils/_db_orm.js"
-import {NextApiRequest,NextApiResponse} from "next";
+import jwt from "jsonwebtoken";
 
-export default async function decodeToken(req:NextApiRequest, res:NextApiResponse) {
-    let session = await getSession(req,res);
-
-    if(!session || !session?.user) return;
+export default async function decodeToken(token:string|undefined) {
+    let secret = process.env.SECRET || '';
+    if(!token) return {status:false};
     try {
-        let token = session?.user;
-        let user = await prisma.user.findFirst({
-            where: {email:token?.email}
+        let decode:any = jwt.verify(token, secret);
+        let user = prisma.user.findFirst({
+            where: {
+                id: decode?.userId
+            }
         })
-        if(!user) return;
-        return user;
+        return{status:true,user:decode};
     }
     catch(err) {
-        return
+        return {status:false};
     }
 }
