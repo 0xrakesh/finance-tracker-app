@@ -2,7 +2,6 @@
 import {Fragment, useEffect, useState} from "react";
 import {Button} from "@/components/ui/button";
 import Link from 'next/link'
-import {router} from "next/client";
 
 type Props = {
     page: string|null
@@ -30,7 +29,7 @@ export default function Navbar({page}:Props){
 
     const logout = async() => {
         localStorage.clear();
-        router.push("/");
+        window.location.href="/"
     }
 
     return (
