@@ -17,14 +17,14 @@ type ResponseGet = {
 }
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse<ResponsePost|ResponseGet|Error>) {
-    let user:User|undefined = await decodeToken(req,res);
-    if(!user) return res.status(404).json({status:"User not found"});
+    let user:any = await decodeToken(req.headers.authorization);
+    if(user.status===false) return res.status(404).json({status:"User not found"});
     if(req.method === "POST") {
         let finance:Finance = JSON.parse(req.body);
         try {
             await prisma.finance.create({
                 data: {
-                    userId: user?.id,
+                    userId: user?.user.id,
                     purpose: finance.purpose,
                     category: finance.category,
                     amount: finance.amount,
@@ -41,7 +41,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
         try {
             let finance:Finance[] = await prisma.finance.findMany({
                 where:{
-                    userId:user?.id
+                    userId:user?.user.id
                 }
             })
             res.status(200).json({finance:finance});

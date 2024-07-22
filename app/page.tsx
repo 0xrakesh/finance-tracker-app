@@ -27,15 +27,22 @@ export default function Home() {
         }
     }
 
-    let [user,setUser]= useState<any>(false);
+    let [user,setUser]= useState<boolean>(false);
     useEffect(() => {
         userProfile();
     }, []);
 
     const userProfile = async() => {
-        let response: Response = await fetch("/api/userprofile");
+        let token = localStorage.getItem("authToken");
+        if(!token) return;
+        let response:Response = await fetch("/api/userprofile",{
+            method:"GET",
+            headers : {
+                authorization:token
+            },
+        });
         let result = await response.json();
-        setUser(result.status);
+        setUser(result?.user);
     }
 
     const [transaction,setTransaction] = useState<TransactionType[]>();
@@ -43,7 +50,14 @@ export default function Home() {
 
     useEffect(() => {
         let fetchData = async() => {
-            let response = await fetch("/api/dashboard");
+            if(!localStorage.getItem("authToken")) return;
+            let response = await fetch("/api/dashboard",{
+                method:"GET",
+                headers: {
+                    "Content-Type": "application/json",
+                    "authorization": localStorage.getItem("authToken") || ""
+                },
+            });
             let result = await response.json();
             setLoading(false);
             setTransaction(result.finance);
@@ -53,8 +67,7 @@ export default function Home() {
 
     return (
         <Fragment>
-
-            <Navbar page={"home"}/>
+            <Navbar page={"/"}/>
             {loading ? <Progress/> : user ?
                 <Fragment>
                     {

@@ -7,8 +7,7 @@ import {toast} from "sonner";
 import {useRouter} from "next/navigation";
 import Navbar from "@/components/Navbar";
 import {TabsContent} from "@/components/ui/tabs";
-import {Card, CardContent, CardFooter, CardHeader, CardTitle} from "@/components/ui/card";
-import Link from "next/link";
+import {Card, CardContent, CardHeader, CardTitle} from "@/components/ui/card";
 
 export default function Home() {
     const [email, setEmail] = useState<string>("");
